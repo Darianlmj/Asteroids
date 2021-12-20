@@ -17,6 +17,7 @@ using namespace std;
 #define TNT_MAX 9
 
 // Command values.
+#define HELP 5
 #define MOVE_LASER 1
 #define MOVE_UP -1
 #define MOVE_DOWN 1
@@ -28,6 +29,8 @@ using namespace std;
 #define NOT_INVALID 0
 #define INVALID 1
 
+void help_message();
+void welcome_message();
 void shift_map(vector<vector<int> > *map);
 void place_blocks(vector<vector<int> > *map);
 void process_commands(vector<vector<int> > *map);

@@ -34,6 +34,7 @@ void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map) {
 // Function to place blocks on the main map......................................
 void place_blocks(vector<vector<int> > *map) {
     int num_of_blocks;
+    welcome_message();
     cout << "How many blocks? ";
     cin >> num_of_blocks;
     
@@ -73,13 +74,16 @@ void process_commands(vector<vector<int> > *map) {
     int laserY = MAP_SIZE / 2;
 
     // All the main commands in the program are here.
-    int static_num, rotate, up_or_down, all_empty;
+    int command, rotate, up_or_down, all_empty;
     int rotate_invalid = NOT_INVALID;
 
     // The following lines moves the laser upwards or downwards.....................
     // While the inputs are valid and not EOF, move the laser up or down
-    while (cin >> static_num) { 
-        switch (static_num) {
+    while (cin >> command) { 
+        switch (command) {
+            case HELP:
+                help_message();
+                break;
             case MOVE_LASER:
                 // If player inputs 1 1, then laser moves downwards 
                 cin >> up_or_down;
@@ -136,9 +140,10 @@ void process_commands(vector<vector<int> > *map) {
                 rotate_invalid = INVALID;    
                 break;
         }
-
-        // If anything else is entered, then nothing happens and map prints unchanged
-        print_map(map, laserY);     
+        if (command != 5) {
+            // If anything else is entered, then nothing happens and map prints unchanged
+            print_map(map, laserY);     
+        }
     }
 }
 
@@ -254,4 +259,25 @@ int check_if_win(vector<vector<int> > *map, int laserY) {
     }
     // If the map is empty, then the variable is true
     return all_empty;
+}
+
+void welcome_message() {
+    cout << "===============================================================\n";
+    cout << "                           ASTEROIDS                           \n";
+    cout << "===============================================================\n";
+    cout << "Welcome to Asteroids - the remake. In this game, your spaceship\n"
+         << "is under threat of being destroyed by rogue asteroids. Your job\n"
+         << "is to defend your spacecraft by destroying all asteroids.    \n\n";
+    help_message();
+}
+
+void help_message() {
+    cout << "               ============                          \n";
+    cout << "               | COMMANDS |                          \n";
+    cout << "               ============                          \n";
+    cout << "Spacecraft   : 1 [1=MOVE_UP] [-1=MOVE_DOWN]          \n";
+    cout << "Fire Laser   : 2                                     \n";
+    cout << "Shift Map    : 3                                     \n";
+    cout << "Rotating Map : 4 [1=CLOCKWISE] [2=ANTI-CLOCKWISE]    \n";
+    cout << "Help Menu    : 5                                     \n";
 }
