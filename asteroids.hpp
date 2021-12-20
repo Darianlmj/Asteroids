@@ -1,3 +1,7 @@
+#include <vector>
+
+using namespace std;
+
 // Size of map.
 #define MAP_SIZE 15
 
@@ -15,14 +19,14 @@
 #define NOT_INVALID 0
 #define INVALID 1
 
-void print_map(int map[MAP_SIZE][MAP_SIZE], int laserY);
-void copy_of_map(int map[MAP_SIZE][MAP_SIZE], int copy_map[MAP_SIZE][MAP_SIZE]);
-void place_blocks(int map[MAP_SIZE][MAP_SIZE]);
-void process_commands(int map[MAP_SIZE][MAP_SIZE]);
-void boom(int map[MAP_SIZE][MAP_SIZE], int laserY, int g, int stop_loop);
-void rotate_map(int map[MAP_SIZE][MAP_SIZE], int copy_map[MAP_SIZE][MAP_SIZE], int rotate);
-int check_if_lose(int map[MAP_SIZE][MAP_SIZE], int laserY);
-int check_if_win(int map[MAP_SIZE][MAP_SIZE], int laserY);
-void destroy_block(int map[MAP_SIZE][MAP_SIZE], int laserY);
-void shift_map(int map[MAP_SIZE][MAP_SIZE]);
+void print_map(vector<vector<int> > *map, int laserY);
+void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map);
+void place_blocks(vector<vector<int> > *map);
+void process_commands(vector<vector<int> > *map);
+void boom(vector<vector<int> > *map, int laserY, int g, int stop_loop);
+void rotate_map(vector<vector<int> > *map, vector<vector<int> > *copy_map, int rotate);
+int check_if_lose(vector<vector<int> > *map, int laserY);
+int check_if_win(vector<vector<int> > *map, int laserY);
+void destroy_block(vector<vector<int> > *map, int laserY);
+void shift_map(vector<vector<int> > *map);
 
