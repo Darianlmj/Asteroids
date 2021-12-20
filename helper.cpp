@@ -32,7 +32,7 @@ void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map) {
     while (i < MAP_SIZE) {
         int j = 0;
         while (j < MAP_SIZE) {
-            copy_map[i][j] = map[i][j];
+            (*copy_map)[i][j] = (*map)[i][j];
             j++;
         }
         i++;           
