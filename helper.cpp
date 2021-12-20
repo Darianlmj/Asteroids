@@ -6,8 +6,16 @@
 
 using namespace std;
 
-// Function to print out the contents of the main map array. 
-// Also print out a ">" symbol to denote the current laser position.
+/**
+ * Print out the contents of the main map array.
+ * Also prints out a ">" symbol to denote the current position of the spacecraft.
+ *
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *      int laserY  - Position of spacecraft.
+ *  Returns:
+ *      -
+ */
 void print_map(vector<vector<int> > *map, int laserY) {
     for (int row = 0; row < MAP_SIZE; row++) {  
         if (row == laserY) {      
@@ -22,7 +30,15 @@ void print_map(vector<vector<int> > *map, int laserY) {
     }
 }
 
-// Function to create a copy of the main map.....................................
+/**
+ * Creates a copy of the main map.
+ *
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *      vector<vector<int>> *copy_map  - Pointer to the uninitialised copied map
+ *  Returns:
+ *      -
+ */
 void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map) {
     for (int row = 0; row < MAP_SIZE; row++) {
         for (int column = 0; column < MAP_SIZE; column++) {
@@ -31,15 +47,21 @@ void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map) {
     } 
 }
 
-// Function to place blocks on the main map......................................
+/**
+ * Places asteroids on the map.
+ *
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *  Returns:
+ *      -
+ */
 void place_blocks(vector<vector<int> > *map) {
     // Prompts the player to enter the amount and position of blocks in the map.
-    int num_asteroids;
     cout << "How many asteroids are there on the map? \n";
+    int num_asteroids;
     cin >> num_asteroids;
     cout << "\n";
     
-    int row_int, column_int, value;
     cout << "Enter position of asteroids: \n";
     cout << "Format: [x-coordinate] [y-coordinate] [asteroid type]\n";
 
@@ -47,9 +69,10 @@ void place_blocks(vector<vector<int> > *map) {
     // If there are multiple blocks.
     int count = 0;
     while (count < num_asteroids) { 
+        int row_int, column_int, value;
         cin >> row_int >> column_int >> value;
         // If block placed was valid (inside bounds), then value is printed
-        // If block placed was invalid (out of bounds), then nothing happens
+        // If block placed was invalid (out of bounds), then nothing happens.
         if (0 <= row_int && row_int < MAP_SIZE && 0 <= column_int && column_int < MAP_SIZE) {
             if (value <= 9) {
                 (*map)[row_int][column_int] = value;
@@ -65,7 +88,14 @@ void place_blocks(vector<vector<int> > *map) {
     }
 }
 
-// Function that holds all of the main commands in the program...................
+/**
+ * Determines and executes commands given.
+ *
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *  Returns:
+ *      -
+ */
 void process_commands(vector<vector<int> > *map) {
     // Creates a copy of the main map to be used in later functions.
     vector<vector<int> > copy_map(MAP_SIZE);
@@ -73,93 +103,102 @@ void process_commands(vector<vector<int> > *map) {
         copy_map[i].resize(MAP_SIZE);
     }
 
-    // This line creates out laserY variable. The laser starts in the
-    // middle of the map, at position 7.
+    // Place the spacecraft in the middle of the map.
     int laserY = MAP_SIZE / 2;
 
     // All the main commands in the program are here.
-    int command, rotate, up_or_down, all_empty;
+    int command;
     int rotate_invalid = NOT_INVALID;
 
-    // The following lines moves the laser upwards or downwards.....................
-    // While the inputs are valid and not EOF, move the laser up or down
+    // Determines and execute commands.
     while (cin >> command) { 
         switch (command) {
             case HELP:
                 help_message();
                 break;
             case MOVE_LASER:
-                // If player inputs 1 1, then laser moves downwards 
+                // Moves the spacecraft downwards.
+                int up_or_down;
                 cin >> up_or_down;
                 if (up_or_down == MOVE_DOWN) {
                     laserY = laserY + 1;           
-                    // If laser is at the bottom edge, the the map prints out unchanged
+                    // If spacecraft is at the bottom edge, 
+                    // the the map prints out unchanged
                     if (laserY >= MAP_SIZE) {
                         laserY = MAP_SIZE - 1;               
                     }  
-                    // If player inputs 1 -1, then laser moves upwards  
                 } else if (up_or_down == MOVE_UP) {
+                    // Moves the spacecraft upwards.
                     laserY = laserY - 1;           
-                    // If the laser is at the top edge, the map prints out unchanged
+                    // If the spacecraft is at the top edge, 
+                    // the map prints out unchanged.
                     if (laserY < 0) {
                         laserY = 0;              
                     } 
                 }
                 break;
             case FIRE_LASER:
-                // When 2 is entered, the nearest block with a value of 1 changes to 0
-                // Any adjacent block gets changed to 0 too 
+                // The nearest block with an asteroid changes to 0.
+                // Any adjacent block also gets changed to 0.
                 destroy_block(map, laserY);
-                all_empty = check_if_win(map, laserY);
 
                 // If entire map is empty, then game is won
-                if (all_empty == 1) {
+                if (check_if_win(map, laserY)) {
                     print_map(map, laserY);
-                    cout << "Game Won!\n";
-                    exit(0);
+                    cout << "\n";
+                    cout << "CONGRATULATIONS!\n";
+                    cout << "YOU HAVE DESTROYED ALL ASTEROIDS!\n" << "\n";
+                    exit(EXIT_SUCCESS);
                 }
                 break;
             case SHIFT_MAP:
-                // The following lines shift the map to the left when 3 is pressed,
-                // If there is a stone at the edge of the map then the game is lost
-                if (check_if_lose(map, laserY) == 1) {
-                    exit(0);
+                // Shifts the map left.
+                // The game is lost if there is an asteroid at the edge of the map.
+                if (check_if_lose(map, laserY)) {
+                    exit(EXIT_SUCCESS);
                 }
-                // If game is not lost, the entire map shifts to the left  
+                // Shift map if game is not lost.
                 shift_map(map);    
                 break;
             case ROTATE:
-                // The following lines rotates the entire map either clockwise
+                // Rotates the entire map either clockwise or anti-clockwise.
                 // or counter-clockwise when 4 is pressed
+                int rotate;
                 cin >> rotate;
                 if (rotate_invalid != INVALID) {    
-                    // Makes a copy of the main map and saves it to another array
-                    copy_of_map(map, &copy_map);
-
-                    // The following lines rotate the map clockwise if 1 is pressed or
-                    // rotates the map counter-clockwise if 2 is pressed........................               
+                    // Makes a copy of the main map.
+                    copy_of_map(map, &copy_map);   
                     rotate_map(map, &copy_map, rotate);  
                 } 
-                // Sets rotate command to invalid as soon as a valid rotation happens
+                // Sets rotate command to invalid if a valid rotation happens.
                 rotate_invalid = INVALID;    
                 break;
         }
-        if (command != 5) {
-            // If anything else is entered, then nothing happens and map prints unchanged
+
+        // Prints the current state of the map.
+        if (command != HELP) {
             print_map(map, laserY);     
         }
     }
 }
 
+/**
+ * Destroys an asteroid. Converts value of asteroid and adjacent blocks to 0.
+ * If asteroid was a TNT, calculates the blast radius and converts everything in
+ * the radius to 0.
+ * 
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *      int laserY  - Position of spacecraft
+ *  Returns:
+ *      -
+ */
 void destroy_block(vector<vector<int> > *map, int laserY) {
-    // When a 2 is pressed / block is destroyed
     int stop_loop = 0;
-    int column = 0;  
-    while (column < MAP_SIZE && stop_loop != 1) {
+    for (int column = 0; column < MAP_SIZE && stop_loop != 1; column++) {
         if ((*map)[laserY][column] != EMPTY && stop_loop != 1) {    
-            // STAGE 3: Destroy blocks with TNT
-            // If there is a TNT block behind, above or below a STONE block,
-            // it will be triggered
+            // If there is a TNT block behind, above or below an asteroid,
+            // it will be triggered.
             if (TNT_MIN <= (*map)[laserY][column] && 
                 (*map)[laserY][column] <= TNT_MAX && 
                 stop_loop != 1) {   
@@ -183,18 +222,28 @@ void destroy_block(vector<vector<int> > *map, int laserY) {
             (*map)[laserY - 1][column] = EMPTY;
             (*map)[laserY + 1][column] = EMPTY; 
             stop_loop = 1;        
-        }         
-        column++; 
+        }           
     }                           
 }
 
-void boom(vector<vector<int> > *map, int laserY, int column, int stop_loop) {
-    int radius = (*map)[laserY][column];  
+/**
+ * Converts all blocks in a calculated radius to 0.
+ *
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *      int laserY  - Position of spacecraft
+ *      int col - Keep track of which column to convert.
+ *      int stop_loop - Sentinel variable.
+ *  Returns:
+ *      -
+ */
+void boom(vector<vector<int> > *map, int laserY, int col, int stop_loop) {
+    int radius = (*map)[laserY][col];  
     for (int row = 0; row < MAP_SIZE; row++) {
         for (int column = 0; column < MAP_SIZE; column++) {
             // If the distance of a block is less than the value of the TNT,
-            // then the block gets destroyed
-            int distance = sqrt(pow((column - column), 2) + pow((row - laserY), 2));
+            // then the block gets destroyed.
+            int distance = sqrt(pow((column - col), 2) + pow((row - laserY), 2));
             if (distance < radius) {
                 (*map)[row][column] = EMPTY;
                 stop_loop = 1;
@@ -203,12 +252,18 @@ void boom(vector<vector<int> > *map, int laserY, int column, int stop_loop) {
     }
 } 
 
-// Function that shifts entire map to the left..................................
+/**
+ * Shifts entire map to the left by one column.
+ *
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *  Returns:
+ *      -
+ */
 void shift_map(vector<vector<int> > *map) {   
     for (int row = 0; row < MAP_SIZE; row++) {
         for (int column = 0; column < MAP_SIZE; column++) {
-            // Checks if a block in array is equal to the input value
-            // If yes, then shifts it 1 column to the left
+            // Shifts block one column to the left while maintaining input value.
             if ((*map)[row][column] != EMPTY) {
                 (*map)[row][column - 1] = (*map)[row][column];
                 (*map)[row][column] = 0;                
@@ -217,14 +272,23 @@ void shift_map(vector<vector<int> > *map) {
     }  
 }
 
-// Function that rotates the map clockwise or counter-clockwise..................
+/**
+ * Rotates the map clockwise or anti-clockwise.
+ *
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the main map
+ *      vector<vector<int>> *copy_map  - Pointer to the copy of the main map
+ *      int rotate - Value given to determine direction of rotation
+ *  Returns:
+ *      -
+ */
 void rotate_map(vector<vector<int> > *map, vector<vector<int> > *copy_map, int rotate) {
     for (int row = 0; row < MAP_SIZE; row++) {
         for (int column = 0; column < MAP_SIZE; column++) {
-            // Rotates the map clockwise
+            // Rotates the map clockwise.
             if (rotate == ROTATE_CLOCKWISE) {
                 (*map)[row][column] = (*copy_map)[(MAP_SIZE - 1) - column][row];
-            // Rotates the map counter clockwise
+            // Rotates the map counter clockwise.
             } else if (rotate == ROTATE_ANTI_CLOCKWISE) {
                 (*map)[row][column] = (*copy_map)[column][(MAP_SIZE - 1) - row];
             }                
@@ -232,39 +296,66 @@ void rotate_map(vector<vector<int> > *map, vector<vector<int> > *copy_map, int r
     }
 }
 
-// Function to check the "lose condition".......................................
-int check_if_lose(vector<vector<int> > *map, int laserY) {
-    // Stage 2:End game condition (Loss) when there is a stone at edge of the map            
+/**
+ * Checks current game for the 'lose' condition. Game Over when there is an
+ * asteroid at the left-most edge of the map.
+ * 
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *      int laserY  - Position of spacecraft
+ *  Returns:
+ *      True  - if game over
+ *      False  - if game is not over
+ */
+bool check_if_lose(vector<vector<int> > *map, int laserY) {
     for (int row = 0; row < MAP_SIZE; row++) {
-        // When 3 is pressed, checks if a stone is already at the edge of the map
-        // prints an unchanged map as well as "Game Lost!"               
+        // Checks if an asteroid is already at the edge of the map.
+        // Prints an unchanged map as well as "Game Lost!"               
         if ((*map)[row][0] != 0) {                  
-            print_map(map, laserY);  
-            cout << "Game Lost!\n";
-            return 1;                                                                                  
-        }   
+            print_map(map, laserY);
+            cout << "\n";
+            cout << "GAME OVER! \n";
+            cout << "YOU LOST. BETTER LUCK NEXT TIME!\n" << "\n";
+            return true;                     
+        }
     }
-    return 0;
+    return false;
 }
 
-// Function to check the "win condition"........................................
-int check_if_win(vector<vector<int> > *map, int laserY) {
-    // Stage 2: End game condition (Win) when all stones are destroyed
-    // A variable to check if the enitire map is empty
-    int all_empty = 1;
+/**
+ * Checks current game for the 'win' condition. Game Won when there is no more
+ * asteroids on the map.
+ * 
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *      int laserY  - Position of spacecraft
+ *  Returns:
+ *      True  - if game over
+ *      False  - if game is not over
+ */
+bool check_if_win(vector<vector<int> > *map, int laserY) {
+    // Checks if the entire map is empty.
+    bool all_empty = true;
     for (int row = 0; row < MAP_SIZE; row++) {
         for (int column = 0; column < MAP_SIZE; column++) {
             if ((*map)[row][column] != EMPTY) {
-                // If the map is not empty, then the variable becomes false
-                all_empty = 0;  
+                // If the map is not empty, the game is not yet won.
+                all_empty = false;  
                 return all_empty;                                             
             }                               
         }
     }
-    // If the map is empty, then the variable is true
     return all_empty;
 }
 
+/**
+ * Prints out a welcome message to the game.
+ *
+ *  Arguments:
+ *      -
+ *  Returns:
+ *      -
+ */
 void welcome_message() {
     cout << "===============================================================\n";
     cout << "                           ASTEROIDS                           \n";
@@ -276,6 +367,14 @@ void welcome_message() {
     cout << "\n";
 }
 
+/**
+ * Prints out a help message detailing the various commands in the game.
+ *
+ *  Arguments:
+ *      -
+ *  Returns:
+ *      -
+ */
 void help_message() {
     cout << "               ============                          \n";
     cout << "               | COMMANDS |                          \n";

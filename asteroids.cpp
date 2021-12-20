@@ -11,13 +11,13 @@ int main() {
         map[i].resize(MAP_SIZE);
     }
 
+    // Print welcome message.
     welcome_message();
     // Place blocks on the map.
     place_blocks(&map);
-    // Printing the current state of the map.
+    // Print current state of the map.
     print_map(&map, MAP_SIZE / 2);
-
-    // Process any commands.
+    // Process and executes any commands.
     process_commands(&map);
 }
 

@@ -12,7 +12,7 @@ using namespace std;
 
 // Values in the main map
 #define EMPTY 0
-#define STONE 1
+#define ASTEROID 1
 #define TNT_MIN 2
 #define TNT_MAX 9
 
@@ -35,10 +35,10 @@ void shift_map(vector<vector<int> > *map);
 void place_blocks(vector<vector<int> > *map);
 void process_commands(vector<vector<int> > *map);
 void print_map(vector<vector<int> > *map, int laserY);
-int check_if_win(vector<vector<int> > *map, int laserY);
-int check_if_lose(vector<vector<int> > *map, int laserY);
+bool check_if_win(vector<vector<int> > *map, int laserY);
+bool check_if_lose(vector<vector<int> > *map, int laserY);
 void destroy_block(vector<vector<int> > *map, int laserY);
-void boom(vector<vector<int> > *map, int laserY, int column, int stop_loop);
+void boom(vector<vector<int> > *map, int laserY, int col, int stop_loop);
 void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map);
 void rotate_map(vector<vector<int> > *map, vector<vector<int> > *copy_map, int rotate);
 
