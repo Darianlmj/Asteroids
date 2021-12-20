@@ -33,31 +33,35 @@ void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map) {
 
 // Function to place blocks on the main map......................................
 void place_blocks(vector<vector<int> > *map) {
-    int num_of_blocks;
-    welcome_message();
-    cout << "How many blocks? ";
-    cin >> num_of_blocks;
-    
     // Prompts the player to enter the amount and position of blocks in the map.
+    int num_asteroids;
+    cout << "How many asteroids are there on the map? \n";
+    cin >> num_asteroids;
+    cout << "\n";
+    
     int row_int, column_int, value;
-    cout << "Enter blocks:\n";
+    cout << "Enter position of asteroids: \n";
+    cout << "Format: [x-coordinate] [y-coordinate] [asteroid type]\n";
 
-    // Placing blocks on the map.
-    if (num_of_blocks > 1) {      
-        // Assigning values to respective rows and columns.
-        // If there are multiple blocks.
-        for (int i = 0; i < num_of_blocks; i++) { 
-            cin >> row_int >> column_int >> value;
-            // If block placed was valid (inside bounds), then value is printed
-            // If block placed was invalid (out of bounds), then nothing happens
-            if (0 <= row_int && row_int < MAP_SIZE && 0 <= column_int && column_int < MAP_SIZE) {
-                (*map)[row_int][column_int] = value;
-            }                                          
-        }
-    } else if (num_of_blocks == 1) {
-        // If there is only one block.              
+    // Assigning values to respective rows and columns.
+    // If there are multiple blocks.
+    int count = 0;
+    while (count < num_asteroids) { 
         cin >> row_int >> column_int >> value;
-        (*map)[row_int][column_int] = value; 
+        // If block placed was valid (inside bounds), then value is printed
+        // If block placed was invalid (out of bounds), then nothing happens
+        if (0 <= row_int && row_int < MAP_SIZE && 0 <= column_int && column_int < MAP_SIZE) {
+            if (value <= 9) {
+                (*map)[row_int][column_int] = value;
+            } else {
+                cout << "Invalid asteroid type. Please check your input again.\n";
+                continue;
+            }
+        } else {
+            cout << "Invalid coordinates for asteroid. Please check your input again.\n";
+            continue;
+        }
+        count++;
     }
 }
 
@@ -269,6 +273,7 @@ void welcome_message() {
          << "is under threat of being destroyed by rogue asteroids. Your job\n"
          << "is to defend your spacecraft by destroying all asteroids.    \n\n";
     help_message();
+    cout << "\n";
 }
 
 void help_message() {

@@ -11,6 +11,7 @@ int main() {
         map[i].resize(MAP_SIZE);
     }
 
+    welcome_message();
     // Place blocks on the map.
     place_blocks(&map);
     // Printing the current state of the map.
