@@ -58,7 +58,7 @@ void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map) {
  *      -
  */
 void place_blocks(vector<vector<int> > *map, int mode) {
-    // Prompts the player to enter the amount and position of blocks in the map.
+    // Places blocks depending on the game mode.
     switch (mode) {
         case EASY:
             configure_easy(map);
@@ -70,6 +70,7 @@ void place_blocks(vector<vector<int> > *map, int mode) {
             configure_expert(map);
             break;
         case CUSTOM:
+            // Prompts the player to configure a custom map.
             configure_custom(map);
             help_message();
             break;
@@ -104,26 +105,8 @@ void process_commands(vector<vector<int> > *map) {
             case HELP:
                 help_message();
                 break;
-            case MOVE_LASER:
-                // Moves the spacecraft downwards.
-                int up_or_down;
-                cin >> up_or_down;
-                if (up_or_down == MOVE_DOWN) {
-                    laserY = laserY + 1;           
-                    // If spacecraft is at the bottom edge, 
-                    // the the map prints out unchanged
-                    if (laserY >= MAP_SIZE) {
-                        laserY = MAP_SIZE - 1;               
-                    }  
-                } else if (up_or_down == MOVE_UP) {
-                    // Moves the spacecraft upwards.
-                    laserY = laserY - 1;           
-                    // If the spacecraft is at the top edge, 
-                    // the map prints out unchanged.
-                    if (laserY < 0) {
-                        laserY = 0;              
-                    } 
-                }
+            case MOVE_SPACECRAFT:
+                do_move_spacecraft(&laserY);
                 break;
             case FIRE_LASER:
                 // The nearest block with an asteroid changes to 0.
@@ -529,5 +512,35 @@ void configure_custom(vector<vector<int> > *map) {
             continue;
         }
         count++;
+    }
+}
+
+/**
+ * Moves the spacecraft up or down depending on command given.
+ * 
+ *  Arguments:
+ *      int laserY  - position of spacecraft
+ *  Returns:
+ *      -
+ */
+void do_move_spacecraft(int *laserY) {
+    // Moves the spacecraft downwards.
+    int up_or_down;
+    cin >> up_or_down;
+    if (up_or_down == MOVE_DOWN) {
+        *laserY = *laserY + 1;           
+        // If spacecraft is at the bottom edge, 
+        // the the map prints out unchanged
+        if (*laserY >= MAP_SIZE) {
+            *laserY = MAP_SIZE - 1;               
+        }  
+    } else if (up_or_down == MOVE_UP) {
+        // Moves the spacecraft upwards.
+        *laserY = *laserY - 1;           
+        // If the spacecraft is at the top edge, 
+        // the map prints out unchanged.
+        if (*laserY < 0) {
+            *laserY = 0;              
+        } 
     }
 }

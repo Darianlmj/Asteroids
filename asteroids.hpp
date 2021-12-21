@@ -24,7 +24,7 @@ using namespace std;
 
 // Command values.
 #define HELP 5
-#define MOVE_LASER 1
+#define MOVE_SPACECRAFT 1
 #define MOVE_UP -1
 #define MOVE_DOWN 1
 #define FIRE_LASER 2
@@ -37,6 +37,7 @@ using namespace std;
 
 int game_mode();
 void help_message();
+void do_move_spacecraft(int *laserY);
 void configure_easy(vector<vector<int> > *map);
 void configure_intermediate(vector<vector<int> > *map);
 void configure_expert(vector<vector<int> > *map);
