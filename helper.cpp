@@ -66,36 +66,12 @@ void place_blocks(vector<vector<int> > *map, int mode) {
         case INTERMEDIATE:
             configure_intermediate(map);
             break;
+        case EXPERT:
+            configure_expert(map);
+            break;
         case CUSTOM:
-            cout << "How many asteroids are there on the map? \n";
-            int num_asteroids;
-            cin >> num_asteroids;
-            cout << "\n";
-            
-            cout << "Enter position of asteroids: \n";
-            cout << "Format: [x-coordinate] [y-coordinate] [asteroid type]\n";
-
-            // Assigning values to respective rows and columns.
-            // If there are multiple blocks.
-            int count = 0;
-            while (count < num_asteroids) { 
-                int row_int, column_int, value;
-                cin >> row_int >> column_int >> value;
-                // If block placed was valid (inside bounds), then value is printed
-                // If block placed was invalid (out of bounds), then nothing happens.
-                if (0 <= row_int && row_int < MAP_SIZE && 0 <= column_int && column_int < MAP_SIZE) {
-                    if (value <= 9) {
-                        (*map)[row_int][column_int] = value;
-                    } else {
-                        cout << "Invalid asteroid type. Please check your input again.\n";
-                        continue;
-                    }
-                } else {
-                    cout << "Invalid coordinates for asteroid. Please check your input again.\n";
-                    continue;
-                }
-                count++;
-            }
+            configure_custom(map);
+            help_message();
             break;
     }
 }
@@ -387,13 +363,13 @@ void welcome_message() {
  *      -
  */
 void help_message() {
-    cout << "               ============                          \n";
-    cout << "               | COMMANDS |                          \n";
-    cout << "               ============                          \n";
-    cout << "Spacecraft   : 1 [1=MOVE_UP] [-1=MOVE_DOWN]          \n";
-    cout << "Fire Laser   : 2                                     \n";
-    cout << "Shift Map    : 3                                     \n";
-    cout << "Rotating Map : 4 [1=CLOCKWISE] [2=ANTI-CLOCKWISE]    \n";
+    cout << "               ============                              \n";
+    cout << "               | COMMANDS |                              \n";
+    cout << "               ============                              \n";
+    cout << "Spacecraft   : 1 [1 = MOVE_UP] [-1 = MOVE_DOWN]          \n";
+    cout << "Fire Laser   : 2                                         \n";
+    cout << "Shift Map    : 3                                         \n";
+    cout << "Rotating Map : 4 [1 = CLOCKWISE] [2 = ANTI-CLOCKWISE]    \n";
     cout << "Help Menu    : 5                                     \n" << "\n";
 }
 
@@ -435,6 +411,7 @@ int game_mode() {
  *      -
  */
 void configure_easy(vector<vector<int> > *map) {
+    cout << "You have selected EASY MODE. Have fun!\n";
     help_message();
 
     // Ensures different values are generated in each game.
@@ -463,6 +440,7 @@ void configure_easy(vector<vector<int> > *map) {
  *      -
  */
 void configure_intermediate(vector<vector<int> > *map) {
+    cout << "You have selected INTERMEDIATE MODE. Have fun!\n";
     help_message();
 
     // Ensures different values are generated in each game.
@@ -477,5 +455,79 @@ void configure_intermediate(vector<vector<int> > *map) {
 
         int value = rand() % 6;
         (*map)[x_pos][y_pos % 15] = value;
+    }
+}
+
+/**
+ * Configures the map to EXPERT mode. In this mode, asteroids can spawn 
+ * slightly closer to the spacecraft. In addition, TNT blocks of size 2-4 only 
+ * may spawn. Game may or may not be beatable due to the random nature.
+ * 
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *  Returns:
+ *      -
+ */
+void configure_expert(vector<vector<int> > *map) {
+    cout << "You have selected EXPERT MODE. Good Luck!\n";
+    help_message();
+
+    // Ensures different values are generated in each game.
+    srand(time(NULL));
+    for (int i = 0; i < 13; i++) {
+        int x_pos = rand() % 15;
+        int y_pos = rand() % 15;
+
+        // No asteroids will spawn near to the leftmost-edge of the map.
+        if (x_pos < (MAP_SIZE / 2)) x_pos += (MAP_SIZE / 2) - 4;
+        if (y_pos < (MAP_SIZE / 2)) y_pos += (MAP_SIZE / 2) - 4;
+
+        int value = rand() % 5;
+        (*map)[x_pos][y_pos % 15] = value;
+    }
+}
+
+/**
+ * Configures the map to CUSTOM mode. In this mode, players are able to specify 
+ * how many asteroids there are and where are they located on the map.
+ * 
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *  Returns:
+ *      -
+ */
+void configure_custom(vector<vector<int> > *map) {
+    cout << "             ===============                          \n";
+    cout << "             | CUSTOM MODE |                          \n";
+    cout << "             ===============                          \n";
+
+    cout << "How many asteroids are there on the map? \n";
+    int num_asteroids;
+    cin >> num_asteroids;
+    cout << "\n";
+    
+    cout << "Enter position of asteroids: \n";
+    cout << "Format: [x-coordinate] [y-coordinate] [asteroid type]\n";
+
+    // Assigning values to respective rows and columns.
+    // If there are multiple blocks.
+    int count = 0;
+    while (count < num_asteroids) { 
+        int row_int, column_int, value;
+        cin >> row_int >> column_int >> value;
+        // If block placed was valid (inside bounds), then value is printed
+        // If block placed was invalid (out of bounds), then nothing happens.
+        if (0 <= row_int && row_int < MAP_SIZE && 0 <= column_int && column_int < MAP_SIZE) {
+            if (value <= 9) {
+                (*map)[row_int][column_int] = value;
+            } else {
+                cout << "Invalid asteroid type. Please check your input again.\n";
+                continue;
+            }
+        } else {
+            cout << "Invalid coordinates for asteroid. Please check your input again.\n";
+            continue;
+        }
+        count++;
     }
 }
