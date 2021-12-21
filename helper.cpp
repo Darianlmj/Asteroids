@@ -52,39 +52,47 @@ void copy_of_map(vector<vector<int> > *map, vector<vector<int> > *copy_map) {
  *
  *  Arguments:
  *      vector<vector<int>> *map  - Pointer to the map
+ *      int mode  - Game mode
  *  Returns:
  *      -
  */
-void place_blocks(vector<vector<int> > *map) {
+void place_blocks(vector<vector<int> > *map, int mode) {
     // Prompts the player to enter the amount and position of blocks in the map.
-    cout << "How many asteroids are there on the map? \n";
-    int num_asteroids;
-    cin >> num_asteroids;
-    cout << "\n";
-    
-    cout << "Enter position of asteroids: \n";
-    cout << "Format: [x-coordinate] [y-coordinate] [asteroid type]\n";
+    switch (mode) {
+        case EASY:
+            configure_easy(map);
+            break;
+        case CUSTOM:
+            cout << "How many asteroids are there on the map? \n";
+            int num_asteroids;
+            cin >> num_asteroids;
+            cout << "\n";
+            
+            cout << "Enter position of asteroids: \n";
+            cout << "Format: [x-coordinate] [y-coordinate] [asteroid type]\n";
 
-    // Assigning values to respective rows and columns.
-    // If there are multiple blocks.
-    int count = 0;
-    while (count < num_asteroids) { 
-        int row_int, column_int, value;
-        cin >> row_int >> column_int >> value;
-        // If block placed was valid (inside bounds), then value is printed
-        // If block placed was invalid (out of bounds), then nothing happens.
-        if (0 <= row_int && row_int < MAP_SIZE && 0 <= column_int && column_int < MAP_SIZE) {
-            if (value <= 9) {
-                (*map)[row_int][column_int] = value;
-            } else {
-                cout << "Invalid asteroid type. Please check your input again.\n";
-                continue;
+            // Assigning values to respective rows and columns.
+            // If there are multiple blocks.
+            int count = 0;
+            while (count < num_asteroids) { 
+                int row_int, column_int, value;
+                cin >> row_int >> column_int >> value;
+                // If block placed was valid (inside bounds), then value is printed
+                // If block placed was invalid (out of bounds), then nothing happens.
+                if (0 <= row_int && row_int < MAP_SIZE && 0 <= column_int && column_int < MAP_SIZE) {
+                    if (value <= 9) {
+                        (*map)[row_int][column_int] = value;
+                    } else {
+                        cout << "Invalid asteroid type. Please check your input again.\n";
+                        continue;
+                    }
+                } else {
+                    cout << "Invalid coordinates for asteroid. Please check your input again.\n";
+                    continue;
+                }
+                count++;
             }
-        } else {
-            cout << "Invalid coordinates for asteroid. Please check your input again.\n";
-            continue;
-        }
-        count++;
+            break;
     }
 }
 
@@ -362,8 +370,7 @@ void welcome_message() {
     cout << "===============================================================\n";
     cout << "Welcome to Asteroids - the remake. In this game, your spaceship\n"
          << "is under threat of being destroyed by rogue asteroids. Your job\n"
-         << "is to defend your spacecraft by destroying all asteroids.    \n\n";
-    help_message();
+         << "is to defend your spacecraft by destroying all asteroids.      \n";
     cout << "\n";
 }
 
@@ -384,4 +391,56 @@ void help_message() {
     cout << "Shift Map    : 3                                     \n";
     cout << "Rotating Map : 4 [1=CLOCKWISE] [2=ANTI-CLOCKWISE]    \n";
     cout << "Help Menu    : 5                                     \n";
+}
+
+/**
+ * Prompts player to determine the game mode. Three difficulty levels to choose
+ * from – Easy, Intermediate, Expert. Also has an option to do a custom game.
+ *
+ *  Arguments:
+ *      -
+ *  Returns:
+ *      int mode  - the game mode
+ */
+int game_mode() {
+    cout << "Please select the game's difficulty:\n";
+    cout << "EASY [1]         - For complete beginners\n";
+    cout << "INTERMEDIATE [2] - For those looking for a bit of a challenge\n";
+    cout << "EXPERT [3]       - Attempt at your own risk\n";
+    cout << "CUSTOM [4]       - Have some fun building your own map.\n" << "\n";
+    cout << "Enter game mode: ";
+
+    int mode;
+    while (cin >> mode) {
+        if (mode < 1 || mode > 4) {
+            cout << "You have entered an invalid mode. Please try again.\n";
+        } else {
+            break;
+        }
+    }
+    return mode;
+}
+
+/**
+ * Configures the map to EASY mode. In this mode, asteroids can only spawn after
+ * the middle of the map. In addition, larger value TNT asteroids may spawn.
+ * 
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *  Returns:
+ *      -
+ */
+void configure_easy(vector<vector<int> > *map) {
+    help_message();
+    for (int i = 0; i < 10; i++) {
+        int x_pos = rand() % 15;
+        int y_pos = rand() % 15;
+
+        // No asteroids will spawn near to the leftmost-edge of the map.
+        if (x_pos < (MAP_SIZE / 2)) x_pos += (MAP_SIZE / 2) - x_pos;
+        if (y_pos < (MAP_SIZE / 2)) y_pos += (MAP_SIZE / 2) - y_pos;
+
+        int value = rand() % 10;
+        (*map)[x_pos][y_pos % 15] = value;
+    }
 }

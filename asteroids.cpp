@@ -13,8 +13,10 @@ int main() {
 
     // Print welcome message.
     welcome_message();
+    // Determine game mode.
+    int mode = game_mode();
     // Place blocks on the map.
-    place_blocks(&map);
+    place_blocks(&map, mode);
     // Print current state of the map.
     print_map(&map, MAP_SIZE / 2);
     // Process and executes any commands.

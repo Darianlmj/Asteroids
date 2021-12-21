@@ -10,11 +10,17 @@ using namespace std;
 // Size of map.
 #define MAP_SIZE 15
 
-// Values in the main map
+// Values in the main map.
 #define EMPTY 0
 #define ASTEROID 1
 #define TNT_MIN 2
 #define TNT_MAX 9
+
+// Game modes.
+#define EASY 1
+#define INTERMEDIATE 2
+#define EXPERT 3
+#define CUSTOM 4
 
 // Command values.
 #define HELP 5
@@ -29,12 +35,14 @@ using namespace std;
 #define NOT_INVALID 0
 #define INVALID 1
 
+int game_mode();
 void help_message();
+void configure_easy(vector<vector<int> > *map);
 void welcome_message();
 void shift_map(vector<vector<int> > *map);
-void place_blocks(vector<vector<int> > *map);
 void process_commands(vector<vector<int> > *map);
 void print_map(vector<vector<int> > *map, int laserY);
+void place_blocks(vector<vector<int> > *map, int mode);
 bool check_if_win(vector<vector<int> > *map, int laserY);
 bool check_if_lose(vector<vector<int> > *map, int laserY);
 void destroy_block(vector<vector<int> > *map, int laserY);
