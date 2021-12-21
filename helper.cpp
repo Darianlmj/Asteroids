@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <vector>
+#include <time.h>
 #include "asteroids.hpp"
 
 using namespace std;
@@ -61,6 +62,9 @@ void place_blocks(vector<vector<int> > *map, int mode) {
     switch (mode) {
         case EASY:
             configure_easy(map);
+            break;
+        case INTERMEDIATE:
+            configure_intermediate(map);
             break;
         case CUSTOM:
             cout << "How many asteroids are there on the map? \n";
@@ -390,7 +394,7 @@ void help_message() {
     cout << "Fire Laser   : 2                                     \n";
     cout << "Shift Map    : 3                                     \n";
     cout << "Rotating Map : 4 [1=CLOCKWISE] [2=ANTI-CLOCKWISE]    \n";
-    cout << "Help Menu    : 5                                     \n";
+    cout << "Help Menu    : 5                                     \n" << "\n";
 }
 
 /**
@@ -432,15 +436,46 @@ int game_mode() {
  */
 void configure_easy(vector<vector<int> > *map) {
     help_message();
+
+    // Ensures different values are generated in each game.
+    srand(time(NULL));
     for (int i = 0; i < 10; i++) {
         int x_pos = rand() % 15;
         int y_pos = rand() % 15;
 
         // No asteroids will spawn near to the leftmost-edge of the map.
-        if (x_pos < (MAP_SIZE / 2)) x_pos += (MAP_SIZE / 2) - x_pos;
-        if (y_pos < (MAP_SIZE / 2)) y_pos += (MAP_SIZE / 2) - y_pos;
+        if (x_pos < (MAP_SIZE / 2)) x_pos += (MAP_SIZE / 2);
+        if (y_pos < (MAP_SIZE / 2)) y_pos += (MAP_SIZE / 2);
 
         int value = rand() % 10;
+        (*map)[x_pos][y_pos] = value;
+    }
+}
+
+/**
+ * Configures the map to INTERMEDIATE mode. In this mode, asteroids can spawn 
+ * slightly closer to the spacecraft. In addition, TNT blocks of size 2-5 only 
+ * may spawn.
+ * 
+ *  Arguments:
+ *      vector<vector<int>> *map  - Pointer to the map
+ *  Returns:
+ *      -
+ */
+void configure_intermediate(vector<vector<int> > *map) {
+    help_message();
+
+    // Ensures different values are generated in each game.
+    srand(time(NULL));
+    for (int i = 0; i < 10; i++) {
+        int x_pos = rand() % 15;
+        int y_pos = rand() % 15;
+
+        // No asteroids will spawn near to the leftmost-edge of the map.
+        if (x_pos < (MAP_SIZE / 2)) x_pos += (MAP_SIZE / 2) - 2;
+        if (y_pos < (MAP_SIZE / 2)) y_pos += (MAP_SIZE / 2) - 2;
+
+        int value = rand() % 6;
         (*map)[x_pos][y_pos % 15] = value;
     }
 }

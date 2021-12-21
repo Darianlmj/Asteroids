@@ -38,6 +38,7 @@ using namespace std;
 int game_mode();
 void help_message();
 void configure_easy(vector<vector<int> > *map);
+void configure_intermediate(vector<vector<int> > *map);
 void welcome_message();
 void shift_map(vector<vector<int> > *map);
 void process_commands(vector<vector<int> > *map);
